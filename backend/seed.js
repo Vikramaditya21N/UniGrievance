@@ -1,124 +1,50 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const User = require('./models/User');
 require('dotenv').config();
 
-const User = require('./models/User');
+const officials = [
+    { name: 'Dr. Principal', email: 'principal@mitmuzaffarpur.edu', password: 'password123', role: 'principal' },
+    { name: 'Chief Warden', email: 'chief.warden@mitmuzaffarpur.edu', password: 'password123', role: 'chief_warden' },
 
-const seedDatabase = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    // HODs
+    { name: 'HOD CSE', email: 'hod.cse@mitmuzaffarpur.edu', password: 'password123', role: 'hod', department: 'CSE' },
+    { name: 'HOD IT', email: 'hod.it@mitmuzaffarpur.edu', password: 'password123', role: 'hod', department: 'IT' },
+    { name: 'HOD MECHANICAL', email: 'hod.mech@mitmuzaffarpur.edu', password: 'password123', role: 'hod', department: 'MECHANICAL' },
+    { name: 'HOD CIVIL', email: 'hod.civil@mitmuzaffarpur.edu', password: 'password123', role: 'hod', department: 'CIVIL' },
+    { name: 'HOD BMR', email: 'hod.bmr@mitmuzaffarpur.edu', password: 'password123', role: 'hod', department: 'BMR' },
+    { name: 'HOD ECE', email: 'hod.ece@mitmuzaffarpur.edu', password: 'password123', role: 'hod', department: 'ECE' },
+    { name: 'HOD EE', email: 'hod.ee@mitmuzaffarpur.edu', password: 'password123', role: 'hod', department: 'EE' },
+    { name: 'HOD CHEMICAL', email: 'hod.chemical@mitmuzaffarpur.edu', password: 'password123', role: 'hod', department: 'CHEMICAL' },
 
-    console.log('MongoDB connected');
+    // Wardens
+    { name: 'Warden H1', email: 'warden.h1@mitmuzaffarpur.edu', password: 'password123', role: 'warden', hostel: 'H1' },
+    { name: 'Warden H2', email: 'warden.h2@mitmuzaffarpur.edu', password: 'password123', role: 'warden', hostel: 'H2' },
+    { name: 'Warden H3', email: 'warden.h3@mitmuzaffarpur.edu', password: 'password123', role: 'warden', hostel: 'H3' },
+    { name: 'Warden H4', email: 'warden.h4@mitmuzaffarpur.edu', password: 'password123', role: 'warden', hostel: 'H4' },
+    { name: 'Warden H5', email: 'warden.h5@mitmuzaffarpur.edu', password: 'password123', role: 'warden', hostel: 'H5' },
+    { name: 'Warden H6', email: 'warden.h6@mitmuzaffarpur.edu', password: 'password123', role: 'warden', hostel: 'H6' },
+    { name: 'Warden H7', email: 'warden.h7@mitmuzaffarpur.edu', password: 'password123', role: 'warden', hostel: 'H7' },
+    { name: 'Warden GIRLS', email: 'warden.girls@mitmuzaffarpur.edu', password: 'password123', role: 'warden', hostel: 'GIRLS_HOSTEL' },
+];
 
-    // Clear existing admin/faculty users (optional)
-    // await User.deleteMany({ role: { $in: ['admin', 'authority', 'higher_authority'] } });
+const seedDB = async () => {
+    try {
+        await mongoose.connect(process.env.MONGODB_URI);
+        console.log('Connected for seeding...');
 
-    // Create Admin User
-    const adminExists = await User.findOne({ email: 'admin@college.com' });
-    if (!adminExists) {
-      const admin = new User({
-        name: 'Admin User',
-        email: 'admin@college.com',
-        rollNumber: 'ADMIN001',
-        password: 'admin123',
-        phone: '9876543210',
-        department: 'Administration',
-        isVerified: true,
-        role: 'admin',
-      });
-      await admin.save();
-      console.log('✅ Admin created: admin@college.com / admin123');
+        // Clear existing officials
+        await User.deleteMany({ role: { $ne: 'student' } });
+
+        // Add new officials
+        for (const official of officials) {
+            await User.create(official);
+        }
+        console.log('Officials seeded successfully!');
+
+        mongoose.connection.close();
+    } catch (error) {
+        console.error('Seeding error:', error);
     }
-
-    // Create Department Head (Faculty)
-    const deptHeadExists = await User.findOne({ email: 'depthead@college.com' });
-    if (!deptHeadExists) {
-      const deptHead = new User({
-        name: 'Dr. Rajesh Kumar',
-        email: 'depthead@college.com',
-        rollNumber: 'DEPT001',
-        password: 'dept123',
-        phone: '9876543211',
-        department: 'CSE',
-        isVerified: true,
-        role: 'authority',
-        authorityType: ['department_head'],
-      });
-      await deptHead.save();
-      console.log('✅ Department Head created: depthead@college.com / dept123');
-    }
-
-    // Create Principal (Higher Authority)
-    const principalExists = await User.findOne({ email: 'principal@college.com' });
-    if (!principalExists) {
-      const principal = new User({
-        name: 'Dr. Priya Singh',
-        email: 'principal@college.com',
-        rollNumber: 'PRINCIPAL001',
-        password: 'principal123',
-        phone: '9876543212',
-        department: 'Administration',
-        isVerified: true,
-        role: 'higher_authority',
-        authorityType: ['principal'],
-      });
-      await principal.save();
-      console.log('✅ Principal created: principal@college.com / principal123');
-    }
-
-    // Create Director (Highest Authority)
-    const directorExists = await User.findOne({ email: 'director@college.com' });
-    if (!directorExists) {
-      const director = new User({
-        name: 'Dr. Vikram Patel',
-        email: 'director@college.com',
-        rollNumber: 'DIRECTOR001',
-        password: 'director123',
-        phone: '9876543213',
-        department: 'Administration',
-        isVerified: true,
-        role: 'higher_authority',
-        authorityType: ['director'],
-      });
-      await director.save();
-      console.log('✅ Director created: director@college.com / director123');
-    }
-
-    // Create Test Student
-    const studentExists = await User.findOne({ email: 'student@college.com' });
-    if (!studentExists) {
-      const student = new User({
-        name: 'Akash Singh',
-        email: 'student@college.com',
-        rollNumber: 'CSE2022001',
-        password: 'student123',
-        phone: '9876543214',
-        department: 'CSE',
-        isVerified: true,
-        role: 'student',
-      });
-      await student.save();
-      console.log('✅ Student created: student@college.com / student123');
-    }
-
-    console.log('\n✅ All test accounts created successfully!');
-    console.log('\n📋 Login Credentials:');
-    console.log('────────────────────────────────────────');
-    console.log('Student:          student@college.com / student123');
-    console.log('Department Head:  depthead@college.com / dept123');
-    console.log('Principal:        principal@college.com / principal123');
-    console.log('Director:         director@college.com / director123');
-    console.log('Admin:            admin@college.com / admin123');
-    console.log('────────────────────────────────────────\n');
-
-    process.exit(0);
-  } catch (error) {
-    console.error('Error seeding database:', error);
-    process.exit(1);
-  }
 };
 
-seedDatabase();
+seedDB();

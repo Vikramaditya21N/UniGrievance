@@ -1,235 +1,98 @@
-# 🎓 UniGrievance - Grievance Management System
+# 🎓 UniGrievance
 
-A complete solution for managing student and faculty complaints in universities.
+Welcome to **UniGrievance**, a professional and modern grievance management system built specifically for **MIT Muzaffarpur**. This platform allows students to voice their concerns easily and helps authorities resolve them quickly and transparently.
 
-## ✨ Key Features
+---
 
-- 🔐 **Secure Authentication** - Student registration, email verification, JWT login
-- 📝 **Easy Complaint Filing** - Multiple categories (Hostel, Infrastructure, Faculty, etc.)
-- 📊 **Real-time Tracking** - Monitor complaint status from submission to resolution
-- 👥 **Authority Management** - Department Heads, Principals, Directors, Admin roles
-- ⏰ **Auto-Escalation** - Complaints escalate automatically if not resolved in time
-- 📧 **Instant Notifications** - Email & in-app updates on status changes
-- 📈 **Admin Analytics** - Dashboard with grievance statistics and insights
-- 🎨 **Modern UI** - Responsive design, professional college theme
+## 🌟 Features
 
-## 📁 Project Structure
+We have completely redesigned the system to be **faster, safer, and more beautiful**. 
 
-```
-UniGrievance/
-│
-├── 🔙 backend/              (Node.js + Express + MongoDB)
-│   ├── config/              (Email configuration)
-│   ├── controllers/         (Business logic)
-│   ├── middleware/          (Authentication)
-│   ├── models/              (Database schemas)
-│   ├── routes/              (API endpoints)
-│   ├── server.js            (Main server)
-│   ├── seed.js              (Sample data)
-│   └── package.json
-│
-└── 🎨 frontend/             (React)
-    ├── public/              (HTML template)
-    ├── src/
-    │   ├── pages/           (Login, Register, Dashboard, etc.)
-    │   ├── components/      (Navbar, Footer, etc.)
-    │   ├── context/         (Authentication state)
-    │   ├── services/        (API calls)
-    │   ├── App.js
-    │   └── index.js
-    └── package.json
-```
+1. **Modern Design**: A "Glassmorphism" look that feels like a premium app.
+2. **Mobile Ready**: Works perfectly on your phone, tablet, or laptop.
+3. **Smart Tracking**: A visual timeline shows exactly where your grievance is (e.g., with the Warden or the Principal).
+4. **Safety First**: Students can file grievances **anonymously** (hiding their identity).
+5. **Accountability**: If an authority doesn't act within **3 days**, the grievance is automatically sent to their boss!
 
-## Setup Instructions
+---
 
-### Backend Setup
+## 🔥 Key Features for Everyone
 
-1. Navigate to backend folder:
-```bash
+### For Students 👨‍🎓
+- **Easy Filing**: Submit issues in seconds (Hostel, Academic, or General).
+- **Anonymity**: Toggle "Hide My Identity" to stay safe.
+- **Visual Journey**: Watch your grievance move through levels on a real-time timeline.
+- **Feedback**: After a resolution, YOU decide if it's "Done" or if it needs to be "Reopened."
+
+### For Authorities 👮‍♂️
+- **Clear Actions**: A dedicated dashboard to see only your assigned grievances.
+- **Fast Processing**: Update status (In Progress, Resolved) with one click.
+- **Complete Info**: See student details (unless anonymous) and full descriptions clearly.
+
+---
+
+## �️ How to Set Up the Project
+
+Follow these simple steps to run the project on your computer:
+
+### 1. Requirements
+- Install **Node.js** from [nodejs.org](https://nodejs.org).
+- Have a **MongoDB** account (or run it locally).
+
+### 2. Setting Up the Backend (The Server)
+```powershell
+# Go to the backend folder
 cd backend
-```
 
-2. Install dependencies:
-```bash
+# Install the necessary tools
 npm install
-```
 
-3. Create `.env` file from `.env.example`:
-```bash
-cp .env.example .env
-```
-
-4. Update `.env` with your configuration:
-   - MongoDB connection string
-   🚀 Quick Start
-
-### Prerequisites
-- Node.js (v14+)
-- MongoDB (local or Atlas)
-- Gmail account (for email notifications)
-
-### Backend Setup (Terminal 1)
-
-```bash
-cd backend
-npm install
-```
-
-Create `.env` file:
-```
+# Create a '.env' file in the backend folder and add:
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/unigrievance
-JWT_SECRET=your_secret_key_here
-JWT_EXPIRE=7d
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_app_password
-FRONTEND_URL=http://localhost:3000
-ALLOWED_ORIGINS=http://localhost:3000
+MONGODB_URI=your_mongodb_link
+JWT_SECRET=your_random_secret_key
 ```
 
-Start server:
-```bash
-npm start
+### 3. Setting Up the Frontend (The Website)
+```powershell
+# Go back to the main folder, then into the frontend folder
+cd ../frontend
+
+# Install the necessary tools
+npm install
+
+# Start the website
+npm run dev
 ```
 
-### Frontend Setup (Terminal 2)
+---
 
-```🔗 Main API Endpoints
+## 🔑 Default Login Accounts (Testing)
 
-### Authentication
-```
-POST   /api/auth/register              Register new account
-POST   /api/auth/login                 Login
-GET    /api/auth/verify-email/:token   Verify email
-POST   /api/auth/resend-verification   Resend verification email
-```
+Use these accounts to test the different roles in the system. The password for all accounts is `password123`.
 
-### Complaints
-```
-POST   /api/complaints                 File new complaint
-GET    /api/complaints/my-complaints   Get your complaints
-GET    /api/complaints                 Get all (authority/admin)
-PATCH  /api/complaints/:id/status      Update status
-PATCH  /api/complaints/:id/escalate    Escalate complaint
-GET    /api/complaints/statistics      Get analytics (admin)
-```
+| Role | Username / Email | Responsibility |
+| :--- | :--- | :--- |
+| **Student** | `test@gmail.com` | Files grievances. |
+| **Warden** | `warden.h1@mitmuzaffarpur.edu` | Resolves hostel issues. |
+| **Chief Warden**| `chief.warden@mitmuzaffarpur.edu`| Handles escalations from Wardens. |
+| **HOD** | `hod.cse@mitmuzaffarpur.edu` | Resolves academic issues. |
+| **Principal** | `principal@mitmuzaffarpur.edu` | The final authority for all issues. |
 
-### User
-```
-GET    /api/users/profile              Get profile
-PUT    /api/users/profile              Update profile
-GET    /api/users/notifications        Get notifications
-```
-2. **Department Head (Authority)**: Can view assigned complaints, update status
-3. 👥 User Roles
+---
 
-| Role | Access | Permissions |
-|------|--------|-------------|
-| **Student** | File & track complaints | View own complaints, submit feedback |
-| **Department Head** | View assigned complaints | Update status, assign to self |
-| **Principal** | Escalated complaints | Review, reassign, resolve |
-| **Director** | All complaints | Final approval, system overview |
-| **Admin** | Full system access | Manage users, view statistics |
+## 🛡️ The "3-Day Rule"
+To ensure no grievance is ignored, we built a **Cron Job**. Every midnight, the system checks for grievances that haven't been touched in **3 days**. 
+- A Warden's ignored issue goes to the **Chief Warden**.
+- A Chief Warden's or HOD's ignored issue goes directly to the **Principal**.
 
-## 📊 Complaint Workflow
+---
 
-```
-┌─────────┐     ┌──────────┐     ┌─────────────┐     ┌──────────┐
-│Submitted│ --> │Assigned  │ --> │In Progress  │ --> │Resolved  │
-└──💾 Database Schema
+## 🎨 Tech Stack
+- **Frontend**: React.js & Vite (Fast & Interactive)
+- **Backend**: Node.js & Express (Stable & Secure)
+- **Database**: MongoDB (Flexible Data)
+- **Styling**: Modern CSS (Premium Aesthetics)
 
-### User
-```
-name, email, rollNumber, password, phone, department
-role: student | authority | higher_authority | admin
-authorityType: [department_head, principal, director, ...]
-```
-
-### Complaint
-```
-complaintId (auto-generated: CMC-202401-00001)
-studentId, category, title, description, location
-status: submitted | assigned | in_progress | escalated | resolved
-priority: low | medium | high | urgent
-assignedTo, timeline, activityLog, resolutionDetails
-```
-
-### Notification
-```
-recipientId, complaintId, type, message, isRead
-```
-- complaintId (auto-generated)
-- studentId, category, title, description, location
-- status, priority, assignedTo, assignedToHigherAuthority
-- timeline (assignmentDeadline, escalationDeadline)
-- activityLog (all actions with timestamp)
-- resolutionDetails, feedbackRating
-
-### Notification Schema
-- recipientId, complaintId, type, title, message
-- isRead flag, timestamp
-
-## Testing
-
-### Test Student Registration
-1. Register with student credentials
-2. Check email for verification link
-3. Verify email and login
-
-### Test Complaint Filing
-1. Login as student
-2. Click "File New Complaint"
-3. Fill form and submit
-4. View in dashboard
-
-### Test Authority Flow
-1. 🧪 Test Accounts
-
-Use these after running `seed.js`:
-
-| Role | Email | Password |
-|------|-------|----------|
-| Student | student@college.com | student123 |
-| Dept Head | depthead@college.com | dept123 |
-| Principal | principal@college.com | principal123 |
-| Director | director@college.com | director123 |
-| Admin | admin@college.com | admin123 |
-
-## 📧 Email Setup (Gmail)
-
-1. Enable 2-Factor Authentication
-2. Go to: myaccount.google.com/apppasswords
-3. Generate 16-character password
-4. Add to `.env` as `EMAIL_PASS`
-
-## 🔒 Security Features
-
-✅ JWT Authentication
-✅ Password Hashing (bcryptjs)
-✅ CORS Protection
-✅ Role-Based Access Control (RBAC)
-✅ Input Validation
-✅ Email Verification
-
-## 📱 Tech Stack
-
-**Backend:** Node.js, Express, MongoDB, Mongoose
-**Frontend:** React, React Router, Bootstrap
-**Authentication:** JWT
-**Email:** Nodemailer
-
-## 🚢 Deployment Tips
-
-- Use MongoDB Atlas for database
-- Deploy backend on Heroku/Railway
-- Deploy frontend on Vercel/Netlify
-- Store secrets in environment variables
-- Enable HTTPS in production
-
-## 📝 License
-
-MIT License - Feel free to use this project!
-
-## ❓ Need Help?
-
-Check the issues in GitHub or
+---
+*Created with ❤️ for the students of MIT Muzaffarpur.*

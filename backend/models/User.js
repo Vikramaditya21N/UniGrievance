@@ -2,69 +2,54 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Please provide a name'],
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: [true, 'Please provide an email'],
-    unique: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email'],
-  },
-  rollNumber: {
-    type: String,
-    required: [true, 'Please provide a roll number'],
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: [true, 'Please provide a password'],
-    minlength: 6,
-    select: false,
-  },
-  phone: {
-    type: String,
-    required: [true, 'Please provide a phone number'],
-  },
-  department: {
-    type: String,
-    required: [true, 'Please select a department'],
-  },
-  isVerified: {
-    type: Boolean,
-    default: false,
-  },
-  verificationToken: String,
-  verificationExpiry: Date,
-  role: {
-    type: String,
-    enum: ['student', 'authority', 'higher_authority', 'admin'],
-    default: 'student',
-  },
-  authorityType: {
-    type: [String],
-    enum: ['department_head', 'principal', 'director', 'hostel_warden', 'canteen_manager', 'security_chief'],
-    default: [],
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+    name: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+    },
+    rollNumber: {
+        type: String,
+        unique: true,
+        sparse: true, // Optional for non-students
+    },
+    password: {
+        type: String,
+        required: true,
+        select: false,
+    },
+    role: {
+        type: String,
+        // The hierarchy: student -> warden/hod -> chief_warden -> principal -> admin
+        enum: ['student', 'warden', 'chief_warden', 'hod', 'principal', 'admin'],
+        default: 'student',
+    },
+    department: {
+        type: String,
+        enum: ['IT', 'CSE', 'MECHANICAL', 'CIVIL', 'BMR', 'ECE', 'EE', 'CHEMICAL', null],
+        default: null,
+    },
+    hostel: {
+        type: String,
+        enum: ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7', 'GIRLS_HOSTEL', null],
+        default: null,
+    },
+}, { timestamps: true });
 
 // Hash password before saving
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+userSchema.pre('save', async function () {
+    if (!this.isModified('password')) return;
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Method to compare passwords
-userSchema.methods.matchPassword = async function(enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+// Compare password
+userSchema.methods.matchPassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
 };
 
 module.exports = mongoose.model('User', userSchema);
