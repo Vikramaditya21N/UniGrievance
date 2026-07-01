@@ -95,4 +95,17 @@ To ensure no grievance is ignored, we built a **Cron Job**. Every midnight, the 
 - **Styling**: Modern CSS (Premium Aesthetics)
 
 ---
+
+## 🚀 Easy Deployment on Render
+We have added a `render.yaml` Blueprint specification. To deploy this project to Render:
+
+1. **Push your code** to your own GitHub repository.
+2. Go to the **Render Dashboard** and click **New > Blueprint**.
+3. Connect your repository.
+4. Render will read `render.yaml` and configure everything automatically!
+5. When prompted, enter your **`MONGODB_URI`** connection string.
+6. Click **Deploy**. Render will build the frontend, launch the backend, and automatically generate a secure `JWT_SECRET` for you.
+
+---
 *Created with ❤️ for the students of MIT Muzaffarpur.*
+

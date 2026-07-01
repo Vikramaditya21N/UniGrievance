@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -16,10 +17,21 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/complaints', complaintRoutes);
 
-// Health Check
-app.get('/', (req, res) => {
-    res.send('UniGrievance API is running...');
-});
+
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../frontend/dist')));
+    
+    // Any route that doesn't match API endpoints should serve index.html
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+    });
+} else {
+    // Health Check/Default message in development
+    app.get('/', (req, res) => {
+        res.send('UniGrievance 2.0 API is running...');
+    });
+}
 
 // Database Connection
 mongoose.connect(process.env.MONGODB_URI)

@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: unigrievance-elite
+    env: node
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false # Render will prompt you to enter your MongoDB connection string during setup
+      - key: JWT_SECRET
+        generateValue: true # Render will automatically generate a secure random key for you
+      - key: JWT_EXPIRE
+        value: 7d
