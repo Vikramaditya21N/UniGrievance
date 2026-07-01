@@ -33,14 +33,16 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-// Database Connection
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => {
-        console.log('Connected to MongoDB Atlas');
-        const PORT = process.env.PORT || 5000;
-        app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-        // Manual trigger for testing (optional)
-        // escalateComplaints();
-    })
-    .catch(err => console.error('MongoDB connection error:', err));
+// Start Server Immediately (prevents Render port scan timeout)
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    
+    // Connect to database in the background
+    mongoose.connect(process.env.MONGODB_URI)
+        .then(() => {
+            console.log('Connected to MongoDB Atlas');
+            // Initiate Cron logic if needed
+        })
+        .catch(err => console.error('MongoDB connection error:', err));
+});
